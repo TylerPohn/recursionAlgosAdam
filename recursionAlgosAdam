@@ -1,0 +1,73 @@
+const subsetSum = (numArray, target) => {
+  if (target === 0) return true;
+  if (!numArray.length) return false;
+
+  const smallerArray = numArray.slice(1);
+  return (
+    subsetSum(smallerArray, target - numArray[0]) ||
+    subsetSum(smallerArray, target)
+  );
+};
+console.log(subsetSum([3, 6, 1, 4, 3], 7));
+
+//USES AN IFFY
+//wrap function definition in parens
+//to invoke it, just throw (inputArray) after
+//uses closure, so base case is able to push that permutation
+const allSubsets = (inputArray) => {
+  const result = [];
+
+  (generateSets = (numArray, permutation = []) => {
+    if (!numArray.length) return result.push(permutation);
+
+    generateSets(numArray.slice(1), [...permutation, numArray[0]]);
+    generateSets(numArray.slice(1), permutation);
+  })(inputArray);
+  return result;
+};
+
+console.log(allSubsets([5, 2, 8, 5, 0, 1]));
+
+const htPermutations = (headInput, tailInput) => {
+  const results = [];
+
+  const generatePermutations = (heads, tails, permutation = '') => {
+    if (!heads && !tails) return results.push(permutation);
+
+    if (heads) generatePermutations(--heads, tails, permutation + 'H');
+    if (tails) generatePermutations(heads, --tails, permutation + 'T');
+  };
+
+  generatePermutations(headInput, tailInput);
+  return results;
+};
+
+console.log(htPermutations(2, 1));
+
+//given positive num, return array that includes all possible arrays that sum to that target
+//partitionNumber(2) -> [ [1, 1], [2] ]
+//partitionNumber(3) --> [ [1,1,1], [1,2], [3] ]
+
+const partitionNumber = (num) => {
+  const results = [];
+
+  (function generateCombinations(target, step = 1, combination = []) {
+    if (target === 0) return results.push(combination);
+    if (target < step) return;
+
+    //"take it"
+    generateCombinations(target - step, step, [...combination, step]);
+    //"leave it"
+    generateCombinations(target, ++step, [...combination]);
+  })(num);
+  return results;
+};
+
+console.log(partitionNumber(3));
+
+//find base case - find your answer, and then work backwards one level
+//"if im doing this recursively when my passed in target value of 0, i've got a working solution.
+//what would cause me to get to that point 1 stage earlier"
+//the function to get from the 2nd to last step to the answer is THE SAME as the function required
+//to get from the beginning to the end
+//in recursion, identify how to get from the 2nd to last to last and you found your answer!
