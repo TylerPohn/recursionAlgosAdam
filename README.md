@@ -1,0 +1,2 @@
+# recursionAlgosAdam
+Several recursive patterns. 
